@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/opener/coreference'
+
+cli = Opener::Coreference::CLI.new(:args => ARGV)
+
+cli.run(STDIN.tty? ? nil : STDIN.read)
