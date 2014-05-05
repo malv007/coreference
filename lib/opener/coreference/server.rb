@@ -3,7 +3,7 @@ require 'opener/webservice'
 require 'httpclient'
 
 module Opener
-  class Ner
+  class Coreference
     ##
     # Coreference server powered by Sinatra.
     #
