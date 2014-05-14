@@ -1,12 +1,12 @@
 require File.expand_path('../lib/opener/coreference/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = "opener-coreference"
-  gem.version       = Opener::Coreference::VERSION
-  gem.authors       = ["development@olery.com"]
-  gem.summary       = "Gem that wraps the coreference code"
-  gem.description   = gem.summary
-  gem.homepage      = ""
+  gem.name        = "opener-coreference"
+  gem.version     = Opener::Coreference::VERSION
+  gem.authors     = ["development@olery.com"]
+  gem.summary     = "Gem that wraps the coreference code"
+  gem.description = gem.summary
+
   gem.has_rdoc              = "yard"
   gem.required_ruby_version = ">= 1.9.2"
 
