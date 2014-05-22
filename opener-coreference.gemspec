@@ -14,7 +14,8 @@ Gem::Specification.new do |gem|
     'lib/**/*',
     'config.ru',
     '*.gemspec',
-    'README.md'
+    'README.md',
+    'exec/**/*'
   ]).select { |file| File.file?(file) }
 
   gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }
@@ -25,6 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'opener-coreference-base'
   gem.add_dependency 'opener-webservice'
   gem.add_dependency 'puma'
+  gem.add_dependency 'opener-daemons'
 
   gem.add_development_dependency "rake"
 end
