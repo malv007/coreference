@@ -4,6 +4,7 @@ require 'nokogiri'
 
 require_relative 'coreference/version'
 require_relative 'coreference/cli'
+require_relative 'coreference/error_layer'
 
 module Opener
   class Coreference
@@ -37,16 +38,22 @@ module Opener
     # @return [Array]
     #
     def run(input)
-      language = language_from_kaf(input)
-      args = options[:args].dup
+      begin
+        language = language_from_kaf(input)
+        args = options[:args].dup
 
-      if language_constant_defined?(language)
-        kernel = language.new(:args => args)
-      else
-        kernel = Coreferences::Base.new(:args => args, :language => language)
+        if language_constant_defined?(language)
+          kernel = language.new(:args => args)
+        else
+          kernel = Coreferences::Base.new(:args => args, :language => language)
+        end
+        stdout, stderr, process = kernel.run(input)
+        raise stderr unless process.success?
+        return stdout
+        
+      rescue Exception => error
+        return ErrorLayer.new(input, error.message, self.class).add
       end
-
-      return kernel.run(input)
     end
 
     protected
