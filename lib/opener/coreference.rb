@@ -1,6 +1,7 @@
 require 'optparse'
 require 'opener/coreferences/base'
 require 'nokogiri'
+require 'opener/core'
 
 require_relative 'coreference/version'
 require_relative 'coreference/cli'
