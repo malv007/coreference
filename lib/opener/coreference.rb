@@ -1,10 +1,10 @@
 require 'optparse'
 require 'opener/coreferences/base'
 require 'nokogiri'
+require 'opener/core'
 
 require_relative 'coreference/version'
 require_relative 'coreference/cli'
-require_relative 'coreference/error_layer'
 
 module Opener
   class Coreference
@@ -52,7 +52,7 @@ module Opener
         return stdout
         
       rescue Exception => error
-        return ErrorLayer.new(input, error.message, self.class).add
+        return Opener::Core::ErrorLayer.new(input, error.message, self.class).add
       end
     end
 
