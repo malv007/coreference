@@ -6,6 +6,7 @@ Gem::Specification.new do |gem|
   gem.authors     = ["development@olery.com"]
   gem.summary     = "Gem that wraps the coreference code"
   gem.description = gem.summary
+  gem.license     = 'Apache 2.0'
 
   gem.has_rdoc              = "yard"
   gem.required_ruby_version = ">= 1.9.2"
@@ -15,6 +16,7 @@ Gem::Specification.new do |gem|
     'config.ru',
     '*.gemspec',
     'README.md',
+    'LICENSE.txt',
     'exec/**/*'
   ]).select { |file| File.file?(file) }
 
