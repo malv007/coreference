@@ -1,81 +1,59 @@
 module Opener
   class Coreference
     ##
-    # CLI wrapper around {Opener::Coreference} using OptionParser.
+    # CLI wrapper around {Opener::Coreference} using Slop.
     #
-    # @!attribute [r] options
-    #  @return [Hash]
-    # @!attribute [r] option_parser
-    #  @return [OptionParser]
+    # @!attribute [r] parser
+    #  @return [Slop]
     #
     class CLI
-      attr_reader :options, :option_parser
+      attr_reader :parser
+
+      def initialize
+        @parser = configure_slop
+      end
 
       ##
-      # @param [Hash] options
+      # @param [Array] argv
       #
-      def initialize(options = {})
-        @options = DEFAULT_OPTIONS.merge(options)
+      def run(argv = ARGV)
+        parser.parse(argv)
+      end
 
-        @option_parser = OptionParser.new do |opts|
-          opts.program_name   = 'coreference'
-          opts.summary_indent = '  '
+      ##
+      # @return [Slop]
+      #
+      def configure_slop
+        return Slop.new(:strict => false, :indent => 2, :help => true) do
+          banner 'Usage: coreference [OPTIONS]'
 
-          opts.on('-h', '--help', 'Shows this help message') do
-            show_help
-          end
+          separator <<-EOF.chomp
 
-          opts.on('-v', '--version', 'Shows the current version') do
-            show_version
-          end
+About:
 
-          opts.separator <<-EOF
+    Coreference resolution for various languages such as Dutch and English.
+    This command reads input from STDIN.
 
-Examples:
+Example:
 
-  cat example.kaf | #{opts.program_name}
-
-Supported Languages (taken from kaf lang element):
-
-  * Dutch (nl)
-  * English (en)
-  * French (fr)
-  * German (de)
-  * Italian (it)
-  * Spanish (es)
+    cat some_file.kaf | coreference
           EOF
+
+          separator "\nOptions:\n"
+
+          on :v, :version, 'Shows the current version' do
+            abort "coreference v#{VERSION} on #{RUBY_DESCRIPTION}"
+          end
+
+          run do |opts, args|
+            coref = Coreference.new(:args => args)
+
+            input = STDIN.tty? ? nil : STDIN.read
+
+            puts coref.run(input)
+          end
         end
       end
-
-      ##
-      # @param [String] input
-      #
-      def run(input)
-        option_parser.parse!(options[:args])
-
-        tokenizer = Coreference.new(options)
-
-        stdout, stderr, process = tokenizer.run(input)
-
-        puts stdout
-      end
-
-      private
-
-      ##
-      # Shows the help message and exits the program.
-      #
-      def show_help
-        abort option_parser.to_s
-      end
-
-      ##
-      # Shows the version and exits the program.
-      #
-      def show_version
-        abort "#{option_parser.program_name} v#{VERSION} on #{RUBY_DESCRIPTION}"
-      end
     end # CLI
-  end # Ner
+  end # Coreference
 end # Opener
-

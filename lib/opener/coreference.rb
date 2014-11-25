@@ -1,7 +1,6 @@
-require 'optparse'
 require 'opener/coreferences/base'
+require 'slop'
 require 'nokogiri'
-require 'opener/core'
 
 require_relative 'coreference/version'
 require_relative 'coreference/cli'
@@ -16,7 +15,7 @@ module Opener
     # @return [Hash]
     #
     DEFAULT_OPTIONS = {
-      :args     => [],
+      :args => [],
     }.freeze
 
     ##
@@ -24,36 +23,33 @@ module Opener
     #
     # @option options [Array] :args Collection of arbitrary arguments to pass
     #  to the underlying kernels.
-    # @option options [String] :language The language to use.
     #
     def initialize(options = {})
       @options = DEFAULT_OPTIONS.merge(options)
     end
 
     ##
-    # Processes the input and returns an array containing the output of STDOUT,
-    # STDERR and an object containing process information.
+    # Processes the input KAF document and returns a new KAF document containing
+    # the results.
     #
     # @param [String] input
-    # @return [Array]
+    # @return [String]
     #
     def run(input)
-      begin
-        language = language_from_kaf(input)
-        args = options[:args].dup
+      language = language_from_kaf(input)
+      args     = options[:args].dup
 
-        if language_constant_defined?(language)
-          kernel = language.new(:args => args)
-        else
-          kernel = Coreferences::Base.new(:args => args, :language => language)
-        end
-        stdout, stderr, process = kernel.run(input)
-        raise stderr unless process.success?
-        return stdout
-        
-      rescue Exception => error
-        return Opener::Core::ErrorLayer.new(input, error.message, self.class).add
+      if language_constant_defined?(language)
+        kernel = language.new(:args => args)
+      else
+        kernel = Coreferences::Base.new(:args => args, :language => language)
       end
+
+      stdout, stderr, process = kernel.run(input)
+
+      raise stderr unless process.success?
+
+      return stdout
     end
 
     protected
@@ -74,10 +70,14 @@ module Opener
       return Coreferences.const_get(language_constant_name)
     end
 
+    ##
+    # @param [String] input
+    # @return [String]
+    #
     def language_from_kaf(input)
       reader = Nokogiri::XML::Reader(input)
 
       return reader.read.lang
     end
-  end
-end
+  end # Coreference
+end # Opener

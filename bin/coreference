@@ -2,6 +2,6 @@
 
 require_relative '../lib/opener/coreference'
 
-cli = Opener::Coreference::CLI.new(:args => ARGV)
+cli = Opener::Coreference::CLI.new
 
-cli.run(STDIN.tty? ? nil : STDIN.read)
+cli.run
