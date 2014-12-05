@@ -39,7 +39,7 @@ module Opener
       language = language_from_kaf(input)
       args     = options[:args].dup
 
-      if language_constant_defined?(language)
+      if language and language_constant_defined?(language)
         kernel = language.new(:args => args)
       else
         kernel = Coreferences::Base.new(:args => args, :language => language)
@@ -75,9 +75,10 @@ module Opener
     # @return [String]
     #
     def language_from_kaf(input)
-      reader = Nokogiri::XML::Reader(input)
+      document = Nokogiri::XML(input)
+      language = document.xpath('KAF/@xml:lang')[0]
 
-      return reader.read.lang
+      return language ? language.to_s : nil
     end
   end # Coreference
 end # Opener
