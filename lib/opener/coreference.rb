@@ -76,7 +76,7 @@ module Opener
     #
     def language_from_kaf(input)
       document = Nokogiri::XML(input)
-      language = document.xpath('KAF/@xml:lang')[0]
+      language = document.xpath('NAF/@xml:lang')[0]
 
       return language ? language.to_s : nil
     end
